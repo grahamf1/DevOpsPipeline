@@ -17,7 +17,7 @@ provider "azurerm" {
 
 # Define the existing resource group
 data "azurerm_resource_group" "rg" {
-  name = "1-cb315a5b-playground-sandbox"
+  name = "<Azure Resource Group"
 }
 
 # Define the virtual network
@@ -87,7 +87,7 @@ resource "azurerm_linux_virtual_machine" "jenkins_vm" {
   location            = data.azurerm_resource_group.rg.location
   size                = "Standard_B1ms"
   admin_username      = "adminuser"
-  admin_password      = "YourJenkinsPassword123!"  # Add a password for the adminuser
+  admin_password      = "Admin User Password"
 
   admin_ssh_key {
     username   = "adminuser"
@@ -123,8 +123,8 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
   location            = data.azurerm_resource_group.rg.location
   size                = "Standard_B1ms"
   admin_username      = "adminuser"
-  admin_password      = "YourDockerPassword123!"  # Add a password for the adminuser
-
+  admin_password      = "Docker Admin Password"  
+  
   admin_ssh_key {
     username   = "adminuser"
     public_key = file("~/.ssh/id_rsa.pub")
@@ -154,7 +154,7 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
 
 # CosmosDB account with serverless capacity and Table API
 resource "azurerm_cosmosdb_account" "cosmosdb" {
-  name                = "cosmosdb20241014"
+  name                = "cosmosdb20241120"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   offer_type          = "Standard"
@@ -178,7 +178,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
 
 # Azure Container Registry
 resource "azurerm_container_registry" "acr" {
-  name                = "acr20241014"
+  name                = "acr202411201"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -187,7 +187,7 @@ resource "azurerm_container_registry" "acr" {
 
 # App Service Plan for the Web App
  resource "azurerm_service_plan" "app_service_plan" {
-  name                = "webappplan20241014"
+  name                = "webappplan20241120"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"  
@@ -196,7 +196,7 @@ resource "azurerm_container_registry" "acr" {
 
 # Azure Web App with container deployment from ACR
 resource "azurerm_linux_web_app" "app_service" {
-  name                = "webapp20241014"
+  name                = "webapp20241120"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
