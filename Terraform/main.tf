@@ -1,26 +1,22 @@
-# Specify the provider with the version
 terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.70"  # Ensure you are using the latest compatible version, adjust if needed
+      version = "~> 3.70"  
     }
   }
   required_version = ">= 1.0.0" 
 }
 
-# Specify the provider
 provider "azurerm" {
   features {}
   skip_provider_registration = true
 }
 
-# Define the existing resource group
 data "azurerm_resource_group" "rg" {
-  name = "<Azure Resource Group"
+  name = "1-38b2a8d9-playground-sandbox"
 }
 
-# Define the virtual network
 resource "azurerm_virtual_network" "main_vnet" {
   name                = "main-vnet"
   location            = data.azurerm_resource_group.rg.location
@@ -28,7 +24,6 @@ resource "azurerm_virtual_network" "main_vnet" {
   address_space       = ["10.0.0.0/16"]
 }
 
-# Define the subnet
 resource "azurerm_subnet" "main_subnet" {
   name                 = "main-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
@@ -36,7 +31,6 @@ resource "azurerm_subnet" "main_subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# Define public IP for Jenkins VM
 resource "azurerm_public_ip" "jenkins_pip" {
   name                = "jenkins-pip"
   location            = data.azurerm_resource_group.rg.location
@@ -44,7 +38,6 @@ resource "azurerm_public_ip" "jenkins_pip" {
   allocation_method   = "Dynamic"
 }
 
-# Define public IP for Docker VM
 resource "azurerm_public_ip" "docker_pip" {
   name                = "docker-pip"
   location            = data.azurerm_resource_group.rg.location
@@ -52,7 +45,6 @@ resource "azurerm_public_ip" "docker_pip" {
   allocation_method   = "Dynamic"
 }
 
-# Define the network interface for Jenkins VM
 resource "azurerm_network_interface" "jenkins_nic" {
   name                = "jenkins-nic"
   location            = data.azurerm_resource_group.rg.location
@@ -66,7 +58,6 @@ resource "azurerm_network_interface" "jenkins_nic" {
   }
 }
 
-# Define the network interface for Docker VM
 resource "azurerm_network_interface" "docker_nic" {
   name                = "docker-nic"
   location            = data.azurerm_resource_group.rg.location
@@ -80,7 +71,6 @@ resource "azurerm_network_interface" "docker_nic" {
   }
 }
 
-# Define Jenkins Virtual Machine
 resource "azurerm_linux_virtual_machine" "jenkins_vm" {
   name                = "jenkins-vm"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -110,13 +100,11 @@ resource "azurerm_linux_virtual_machine" "jenkins_vm" {
     version   = "latest"
   }
 
-  # Use custom_data to provide the cloud-init script for Jenkins
   custom_data = base64encode(file("install-jenkins.txt"))
 
-  disable_password_authentication = false  # Allow password authentication
+  disable_password_authentication = false
 }
 
-# Define Docker Virtual Machine
 resource "azurerm_linux_virtual_machine" "docker_vm" {
   name                = "docker-vm"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -146,15 +134,13 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
     version   = "latest"
   }
 
-  # Use custom_data to provide the cloud-init script for Docker
   custom_data = base64encode(file("install-docker.txt"))
 
-  disable_password_authentication = false  # Allow password authentication
+  disable_password_authentication = false
 }
 
-# CosmosDB account with serverless capacity and Table API
 resource "azurerm_cosmosdb_account" "cosmosdb" {
-  name                = "cosmosdb20241120"
+  name                = "cosmosdb20241211"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   offer_type          = "Standard"
@@ -176,27 +162,24 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
   }
 }
 
-# Azure Container Registry
 resource "azurerm_container_registry" "acr" {
-  name                = "acr202411201"
+  name                = "acr20241211"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Basic"
   admin_enabled       = true
 }
 
-# App Service Plan for the Web App
  resource "azurerm_service_plan" "app_service_plan" {
-  name                = "webappplan20241120"
+  name                = "webappplan202412111"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"  
   sku_name            = "S1"
 }
 
-# Azure Web App with container deployment from ACR
 resource "azurerm_linux_web_app" "app_service" {
-  name                = "webapp20241120"
+  name                = "webapp202412111"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
@@ -209,12 +192,10 @@ resource "azurerm_linux_web_app" "app_service" {
   }
 }
 
-# Output the CosmosDB endpoint and Web App URL
 output "cosmosdb_endpoint" {
   value = azurerm_cosmosdb_account.cosmosdb.endpoint
 }
 
-# Output the public IPs of both VMs
 output "jenkins_public_ip" {
   value = azurerm_public_ip.jenkins_pip.ip_address
 }
