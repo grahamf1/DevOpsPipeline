@@ -14,7 +14,7 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "rg" {
-  name = "1-38b2a8d9-playground-sandbox"
+  name = "1-3c15d906-playground-sandbox"
 }
 
 resource "azurerm_virtual_network" "main_vnet" {
@@ -140,7 +140,7 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
 }
 
 resource "azurerm_cosmosdb_account" "cosmosdb" {
-  name                = "cosmosdb20241211"
+  name                = "cosmosdb2024121100"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   offer_type          = "Standard"
@@ -163,7 +163,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                = "acr20241211"
+  name                = "acr2024121100"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -171,7 +171,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
  resource "azurerm_service_plan" "app_service_plan" {
-  name                = "webappplan202412111"
+  name                = "webappplan2024121100"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"  
@@ -179,7 +179,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "azurerm_linux_web_app" "app_service" {
-  name                = "webapp202412111"
+  name                = "webapp2024121100"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
