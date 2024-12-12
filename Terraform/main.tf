@@ -77,7 +77,7 @@ resource "azurerm_linux_virtual_machine" "jenkins_vm" {
   location            = data.azurerm_resource_group.rg.location
   size                = "Standard_B1ms"
   admin_username      = "adminuser"
-  admin_password      = "Admin User Password"
+  admin_password      = var.admin_password
 
   admin_ssh_key {
     username   = "adminuser"
@@ -111,7 +111,7 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
   location            = data.azurerm_resource_group.rg.location
   size                = "Standard_B1ms"
   admin_username      = "adminuser"
-  admin_password      = "Docker Admin Password"  
+  admin_password      = var.admin_password
   
   admin_ssh_key {
     username   = "adminuser"
@@ -134,7 +134,9 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
     version   = "latest"
   }
 
-  custom_data = base64encode(file("install-docker.txt"))
+  custom_data = base64encode(file("install-docker.txt", {
+    jenkins_password = var.jenkins_password
+  }))
 
   disable_password_authentication = false
 }

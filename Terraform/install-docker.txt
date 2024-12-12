@@ -22,6 +22,6 @@ runcmd:
 
   - sudo adduser jenkins
   - sudo adduser --gecos "" --disabled-password build
-  - echo "jenkins:Lawson281664" | sudo chpasswd
+  - echo "jenkins:${jenkins_password}" | sudo chpasswd
   - sudo adduser jenkins sudo 
   - sudo usermod -aG docker jenkins
