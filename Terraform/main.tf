@@ -14,7 +14,7 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "rg" {
-  name = "1-b90f4d80-playground-sandbox"
+  name = "{azure_resource_group}"
 }
 
 resource "azurerm_virtual_network" "main_vnet" {
@@ -134,7 +134,7 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
     version   = "latest"
   }
 
-  custom_data = base64encode(file("install-docker.txt", {
+  custom_data = base64encode(templatefile("install-docker.txt", {
     jenkins_password = var.jenkins_password
   }))
 
@@ -142,7 +142,7 @@ resource "azurerm_linux_virtual_machine" "docker_vm" {
 }
 
 resource "azurerm_cosmosdb_account" "cosmosdb" {
-  name                = "cosmosdb20241212"
+  name                = "cosmosdb2024121211"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   offer_type          = "Standard"
@@ -165,7 +165,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                = "acr20241212"
+  name                = "acr202412121"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -173,7 +173,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
  resource "azurerm_service_plan" "app_service_plan" {
-  name                = "webappplan202412121"
+  name                = "webappplan2024121211"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"  
@@ -181,7 +181,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "azurerm_linux_web_app" "app_service" {
-  name                = "webapp202412121"
+  name                = "webapp2024121211"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
